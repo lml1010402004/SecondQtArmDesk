@@ -124,7 +124,4 @@ void settingDateAndTime::updateTimeAndBatteryValue(QString time, int battery)
 void settingDateAndTime::updateTimeRightNow()
 {
   emit udpateTimeSignal();
-    qDebug()<<"settingDateAndTime";
-     qDebug()<<"settingDateAndTime";
-      qDebug()<<"settingDateAndTime";
 }

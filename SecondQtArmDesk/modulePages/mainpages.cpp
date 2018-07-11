@@ -107,8 +107,10 @@ int MainPages::getTheBatteryPercentage()
 void MainPages::init()
 {
 
-   systemtime= QDateTime::currentDateTime().toString("MM-dd hh:mm");
-   systembatteryvalue= getTheBatteryPercentage();
+
+    first_time_enter = true;
+    systemtime= QDateTime::currentDateTime().toString("MM-dd hh:mm");
+    systembatteryvalue= getTheBatteryPercentage();
 
     mysyssetting = new SysSettings;
     mprocess = new QProcess(this);
@@ -124,43 +126,43 @@ void MainPages::init()
 
 
 
-   pathlist.append(path0);
-   pathlist.append(path1);
-   pathlist.append(path2);
+    pathlist.append(path0);
+    pathlist.append(path1);
+    pathlist.append(path2);
 
     mainpage = new drawMainPageView;
-      commonutils = new commonUtils;
+    commonutils = new commonUtils;
 
 
-     shelf  = new BookShelf(this);
-     pulldonwwindow = new pullDownWindow(this);
-     bookonline = new BookOnLine(this);
-     gamemodule = new GameModule(this);
+    shelf  = new BookShelf(this);
+    pulldonwwindow = new pullDownWindow(this);
+    bookonline = new BookOnLine(this);
+    gamemodule = new GameModule(this);
 
 
 
-     mySettings = new Settings(this);
-     mysettinglight = new SettingLight(this);
-     mysettingscreen = new settingScreen(this);
-     mysettingnetwork = new settingNetWork(this);
-     mysettingusbtransfer = new settingUSBTransfer(this);
-     mysettingdateandtime = new settingDateAndTime(this);
-     mysettinglanguage = new settingLanguage(this);
-     mysettingrestore = new settingRestore(this);
-     mysettingabouttablet = new SettingAboutTablet(this);
-     searchresultforbook = new searchResultofBook(this);
+    mySettings = new Settings(this);
+    mysettinglight = new SettingLight(this);
+    mysettingscreen = new settingScreen(this);
+    mysettingnetwork = new settingNetWork(this);
+    mysettingusbtransfer = new settingUSBTransfer(this);
+    mysettingdateandtime = new settingDateAndTime(this);
+    mysettinglanguage = new settingLanguage(this);
+    mysettingrestore = new settingRestore(this);
+    mysettingabouttablet = new SettingAboutTablet(this);
+    searchresultforbook = new searchResultofBook(this);
 
 
-     myhidepulldown = new HidePullDown(this);
-     currentPageOfMainPage =0;
-     totalPagesOfBooks =0;
+    myhidepulldown = new HidePullDown(this);
+    currentPageOfMainPage =0;
+    totalPagesOfBooks =0;
 
 
-     initConnections();
+    initConnections();
 
-     getBookDataFromDataBase();
+    getBookDataFromDataBase();
 
-     mysyssetting->setConnectWifiMac("");
+    mysyssetting->setConnectWifiMac("");
 
 
 
@@ -217,7 +219,7 @@ void MainPages::closeOthereQMainWindow()
 
     if(mysettinglight!=NULL){
 
-       mysettinglight->close();
+        mysettinglight->close();
     }
     if(mysettingscreen!=NULL){
 
@@ -254,7 +256,7 @@ void MainPages::closeOthereQMainWindow()
  */
 void MainPages::mousePressEvent(QMouseEvent *event)
 {
-QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//刷新
+    QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//刷新
     int x = event->x();
     int y = event->y();
     if(SHOWBOOKSHELFSIGNAL){
@@ -266,11 +268,11 @@ QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//刷新
     }else if(SHOWGAMEMODULE){
         emit showGameModuleSignal();
     }else if(CLICKLASTPAGE){
-       if(currentPageOfMainPage>1){
-           currentPageOfMainPage--;
-           currentPagebooklist = commonutils->getCurrentPageBooks(totaltemp,currentPageOfMainPage,3);
-           this->repaint();
-       }
+        if(currentPageOfMainPage>1){
+            currentPageOfMainPage--;
+            currentPagebooklist = commonutils->getCurrentPageBooks(totaltemp,currentPageOfMainPage,3);
+            this->repaint();
+        }
 
     }else if(CLICKNEXTPAGE){
         if(currentPageOfMainPage<totalPagesOfBooks-1){
@@ -280,46 +282,46 @@ QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//刷新
             this->repaint();
         }
     }else if(FIRSTBOOK){
-      if(currentPagebooklist->size()>0){
-          index_book_of_three =0;
-          if(Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(0)))
-          Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(0));
-             this->repaint();
-          mysettings_m->setCurrentBookPath(currentPagebooklist->at(0).file_path);
-          mysettings_m->setCurrentBookTitle(currentPagebooklist->at(0).file_name);
-          commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(0).file_path);
+        if(currentPagebooklist->size()>0){
+            index_book_of_three =0;
+            if(Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(0)))
+                Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(0));
+            this->repaint();
+            mysettings_m->setCurrentBookPath(currentPagebooklist->at(0).file_path);
+            mysettings_m->setCurrentBookTitle(currentPagebooklist->at(0).file_name);
+            commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(0).file_path);
 
-      }
+        }
 
     }else if(SECONDBOOK){
-      if(currentPagebooklist->size()>1){
-          index_book_of_three =1;
+        if(currentPagebooklist->size()>1){
+            index_book_of_three =1;
 
-          if(Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(1)))
-           Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(1));
-             this->repaint();
-          mysettings_m->setCurrentBookPath(currentPagebooklist->at(1).file_path);
-          mysettings_m->setCurrentBookTitle(currentPagebooklist->at(1).file_name);
-           commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(1).file_path);
+            if(Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(1)))
+                Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(1));
+            this->repaint();
+            mysettings_m->setCurrentBookPath(currentPagebooklist->at(1).file_path);
+            mysettings_m->setCurrentBookTitle(currentPagebooklist->at(1).file_name);
+            commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(1).file_path);
 
-      }
+        }
 
     }else if(THIRDBOOK){
-      if(currentPagebooklist->size()>2){
-          index_book_of_three =2;
-          if( Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(2)))
-           Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(2));
+        if(currentPagebooklist->size()>2){
+            index_book_of_three =2;
+            if( Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(2)))
+                Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(2));
             this->repaint();
-          mysettings_m->setCurrentBookPath(currentPagebooklist->at(2).file_path);
-          mysettings_m->setCurrentBookTitle(currentPagebooklist->at(2).file_name);
-          commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(2).file_path);
+            mysettings_m->setCurrentBookPath(currentPagebooklist->at(2).file_path);
+            mysettings_m->setCurrentBookTitle(currentPagebooklist->at(2).file_name);
+            commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(2).file_path);
 
-      }
+        }
 
     }else if(CURRENTBOOKAREA){
         index_book_of_three = 3;
         this->repaint();
-          commonutils->openBookFromFBreader(mprocess,mysettings_m->getCurrentBookPath());
+        commonutils->openBookFromFBreader(mprocess,mysettings_m->getCurrentBookPath());
     }
 }
 
@@ -330,29 +332,32 @@ QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//刷新
  */
 void MainPages::paintEvent(QPaintEvent *event)
 {
-QApplication::setScreenUpdateMode(QApplication::EINK_GC16_MODE);//刷新
-  painter = new QPainter(this);
+    if(first_time_enter){
+        QApplication::setScreenUpdateMode(QApplication::EINK_GC16_MODE);//刷新
+        first_time_enter = false;
+    }
+    painter = new QPainter(this);
 
-  rect.setRect(0,0,GLOBAL_SCREEN_FIXED_WIDTH,GLOBAL_SCREEN_FIXED_HEIGHT);
-  painter->fillRect(rect,QBrush(Qt::white));
+    rect.setRect(0,0,GLOBAL_SCREEN_FIXED_WIDTH,GLOBAL_SCREEN_FIXED_HEIGHT);
+    painter->fillRect(rect,QBrush(Qt::white));
 
-  this->setAutoFillBackground(true);//必须有这条语句
-  this->setPalette(QPalette(QColor(255,255,255)));
+    this->setAutoFillBackground(true);//必须有这条语句
+    this->setPalette(QPalette(QColor(255,255,255)));
 
 
-  statusbar->drawSystemTime(painter,systemtime);
-  statusbar->drawPullDownRectangle(painter);
-  statusbar->drawBattery(painter,systembatteryvalue);
+    statusbar->drawSystemTime(painter,systemtime);
+    statusbar->drawPullDownRectangle(painter);
+    statusbar->drawBattery(painter,systembatteryvalue);
 
-  if(mysyssetting->getConnectWifiMac().length()>2){
-     statusbar->drawWifiStatus(painter,true);
-  }
+    if(mysyssetting->getConnectWifiMac().length()>2){
+        statusbar->drawWifiStatus(painter,true);
+    }
 
-  if(index_book_of_three>-1){
-      commonutils->drawProgressBarOpeningBook(painter);
-      index_book_of_three =-1;
-  }
-  //Current reading book.
+    if(index_book_of_three>-1){
+        commonutils->drawProgressBarOpeningBook(painter);
+        index_book_of_three =-1;
+    }
+    //Current reading book.
     mainpage->drawCurrentBookCover(painter,mysettings_m->getCurrentBookPath());
     mainpage->drawCurrentBookTitle(painter,mysettings_m->getCurrentBookTitle());
     mainpage->drawCurrentBookAuthor(painter,mysettings_m->getCurrentBookAuthor());
@@ -361,13 +366,13 @@ QApplication::setScreenUpdateMode(QApplication::EINK_GC16_MODE);//刷新
 
 
 
-  mainpage->drawTextView(painter);
-  mainpage->drawLastPage(painter,1);
-  mainpage->drawNextPage(painter,1);
+    mainpage->drawTextView(painter);
+    mainpage->drawLastPage(painter,1);
+    mainpage->drawNextPage(painter,1);
 
-  mainpage->drawThreeBooksOfCurrentPage(painter,currentPagebooklist);
+    mainpage->drawThreeBooksOfCurrentPage(painter,currentPagebooklist);
 
-  mainpage->drawThreeModulesonBottom(painter,1);
+    mainpage->drawThreeModulesonBottom(painter,1);
 
 
 }
@@ -379,7 +384,7 @@ QApplication::setScreenUpdateMode(QApplication::EINK_GC16_MODE);//刷新
  */
 BookInfoItem MainPages::getlatestBookInfo()
 {
-//从数据库中获取和从固定文件中读取.
+    //从数据库中获取和从固定文件中读取.
 
 
 
@@ -411,7 +416,7 @@ void MainPages::getBookDataFromDataBase()
 void MainPages::showBookshelfSlot()
 {
     if(shelf==NULL){
-    shelf  = new BookShelf(this);
+        shelf  = new BookShelf(this);
     }
     shelf->hide();
     shelf->show();
@@ -425,12 +430,12 @@ void MainPages::showPulldownWindowSlot()
 {
 
     if(pulldonwwindow==NULL){
-     pulldonwwindow = new pullDownWindow(this);
+        pulldonwwindow = new pullDownWindow(this);
 
     }
 
-     pulldonwwindow->hide();
-     pulldonwwindow->show();
+    pulldonwwindow->hide();
+    pulldonwwindow->show();
 
 }
 
@@ -441,16 +446,16 @@ void MainPages::showPulldownWindowSlot()
 void MainPages::showBookCitySlot()
 {
     if(bookonline==NULL){
-     bookonline = new BookOnLine(this);
+        bookonline = new BookOnLine(this);
     }
-     bookonline->show();
+    bookonline->show();
 
 }
 
 void MainPages::showGameModuleSlot()
 {
     if(gamemodule==NULL){
-    gamemodule = new GameModule(this);
+        gamemodule = new GameModule(this);
     }
     gamemodule->show();
 }
@@ -461,24 +466,24 @@ void MainPages::showGameModuleSlot()
  */
 void MainPages::showSettingModuleSlot()
 {
-  if(mySettings!=NULL){
-         mySettings->show();
+    if(mySettings!=NULL){
+        mySettings->show();
     }
-  if(!flag_inside_setting){
-     closeOthereQMainWindow();
-    if(pulldonwwindow!=NULL){
-       myhidepulldown->start();
+    if(!flag_inside_setting){
+        closeOthereQMainWindow();
+        if(pulldonwwindow!=NULL){
+            myhidepulldown->start();
+        }
+    }else{
+        pulldonwwindow->hide();
+        closeOthereQMainWindow();
     }
-  }else{
-      pulldonwwindow->hide();
-      closeOthereQMainWindow();
-  }
 
 }
 
 void MainPages::initSignalAndSlotBetweenForPullWindow()
 {
-//    init();
+    //    init();
     initConnections();
 }
 
@@ -500,7 +505,7 @@ void MainPages::showSettingScreenPageSlot()
 
     if(mysettingscreen!=NULL){
         mysettingscreen->hide();
-    mysettingscreen->show();
+        mysettingscreen->show();
     }
 }
 
@@ -512,7 +517,7 @@ void MainPages::showSettingNetWorkSlot()
 {
     if(mysettingnetwork!=NULL){
         mysettingnetwork->hide();
-    mysettingnetwork->show();
+        mysettingnetwork->show();
     }
 }
 
@@ -521,7 +526,7 @@ void MainPages::showSettingUSBtransferSlot()
 
     if(mysettingusbtransfer!=NULL){
         mysettingusbtransfer->hide();
-    mysettingusbtransfer->show();
+        mysettingusbtransfer->show();
     }
 
 }
@@ -530,7 +535,7 @@ void MainPages::showSettingDateSlot()
 {
     if(mysettingdateandtime!=NULL){
         mysettingdateandtime->hide();
-    mysettingdateandtime->show();
+        mysettingdateandtime->show();
     }
 }
 
@@ -538,7 +543,7 @@ void MainPages::showSettingLanguageSlot()
 {
     if(mysettinglanguage!=NULL){
         mysettinglanguage->hide();
-         mysettinglanguage->show();
+        mysettinglanguage->show();
     }
 
 }
@@ -547,7 +552,7 @@ void MainPages::showSettingRestoreSlot()
 {
     if(mysettingrestore!=NULL){
         mysettingrestore->hide();
-    mysettingrestore->show();
+        mysettingrestore->show();
     }
 }
 
@@ -574,26 +579,26 @@ void MainPages::showSearchResultBookSlot()
 void MainPages::updateBookInfoOnUiSlot()
 {
 
-   getBookDataFromDataBase();
-   repaint();
+    getBookDataFromDataBase();
+    repaint();
 
 }
 
 void MainPages::updateTimeAndBatteryValue(QString time, int battery)
 {
-   QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//刷新
-   systemtime = time;
-   systembatteryvalue = battery;
-   this->repaint();
+    QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//刷新
+    systemtime = time;
+    systembatteryvalue = battery;
+    this->repaint();
 
 }
 
 void MainPages::processFinisheds()
 {
 
-     QApplication::setScreenUpdateMode(QApplication::EINK_GC16_MODE);//刷新
-     this->repaint();
-     QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//刷新
-     repaint();
+    QApplication::setScreenUpdateMode(QApplication::EINK_GC16_MODE);//刷新
+    this->repaint();
+    QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//刷新
+    repaint();
 
 }

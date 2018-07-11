@@ -56,7 +56,7 @@ public:
 
 private:
 
-
+bool first_time_enter;
     int index_book_of_three;
 
     QProcess *mprocess;

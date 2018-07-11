@@ -78,9 +78,7 @@ void setDateAndHour::mousePressEvent(QMouseEvent *event)
         }
         setDateandHourIntoSystem(str);
         emit updateTimeRightnowSignal();
-        qDebug()<<"send signal";
-        qDebug()<<"send signal";
-        qDebug()<<"send signal";
+
         this->close();
     }else if(DATEANDTIMECANCLE){
         this->close();
