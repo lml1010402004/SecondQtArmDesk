@@ -12,6 +12,8 @@ pullDownWindow *pulldonwwindow;
 
 bool flag_inside_setting;
 
+extern SysSettings *mysyssetting;
+
 
 QString systemtime;
 int systembatteryvalue;
@@ -61,8 +63,8 @@ void MainPages::keyPressEvent(QKeyEvent *event)
     int key_value = event->key();
     switch (key_value) {
     case Qt::Key_PowerDown:
+        mysyssetting->setConnectWifiMac("");
         system("/usr/wifi/disablewifi");
-
         mprocess->setEnvironment(mprocess->environment());
         mprocess->setWorkingDirectory("/usr/local/app/");
         mprocess->start(SleepApp);
@@ -76,6 +78,81 @@ void MainPages::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
+
+}
+
+void MainPages::mouseMoveEvent(QMouseEvent *event)
+{
+    int x = event->x();
+    int y = event->y();
+
+    if(y>450&&y<600){
+        if(x-position_old_x>25){
+            move_event = true;
+            qDebug()<<"from left to right===";
+            if(currentPageOfMainPage>1){
+                currentPageOfMainPage--;
+                currentPagebooklist = commonutils->getCurrentPageBooks(totaltemp,currentPageOfMainPage,3);
+                this->repaint();
+            }
+
+        }else if(position_old_x-x>25){
+            move_event = true;
+            qDebug()<<"from right to left===";
+            if(currentPageOfMainPage<totalPagesOfBooks-1){
+                currentPageOfMainPage++;
+                currentPagebooklist = commonutils->getCurrentPageBooks(totaltemp,currentPageOfMainPage,3);
+                this->repaint();
+            }
+        }
+    }
+
+}
+
+void MainPages::mouseReleaseEvent(QMouseEvent *event)
+{
+    int x = event->x();
+    int y = event->y();
+
+        if(FIRSTBOOK&&!move_event){
+            if(currentPagebooklist->size()>0){
+                index_book_of_three =0;
+                if(Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(0)))
+                    Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(0));
+                this->repaint();
+                mysettings_m->setCurrentBookPath(currentPagebooklist->at(0).file_path);
+                mysettings_m->setCurrentBookTitle(currentPagebooklist->at(0).file_name);
+                commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(0).file_path);
+
+            }
+
+        }else if(SECONDBOOK&&!move_event){
+            if(currentPagebooklist->size()>1){
+                index_book_of_three =1;
+
+                if(Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(1)))
+                    Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(1));
+                this->repaint();
+                mysettings_m->setCurrentBookPath(currentPagebooklist->at(1).file_path);
+                mysettings_m->setCurrentBookTitle(currentPagebooklist->at(1).file_name);
+                commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(1).file_path);
+
+            }
+
+        }else if(THIRDBOOK&&!move_event){
+            if(currentPagebooklist->size()>2){
+                index_book_of_three =2;
+                if( Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(2)))
+                    Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(2));
+                this->repaint();
+                mysettings_m->setCurrentBookPath(currentPagebooklist->at(2).file_path);
+                mysettings_m->setCurrentBookTitle(currentPagebooklist->at(2).file_name);
+                commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(2).file_path);
+
+            }
+        }
+
+        move_event = false;
 
 }
 
@@ -107,6 +184,7 @@ int MainPages::getTheBatteryPercentage()
 void MainPages::init()
 {
 
+    move_event = false;
 
     first_time_enter = true;
     systemtime= QDateTime::currentDateTime().toString("MM-dd hh:mm");
@@ -259,6 +337,10 @@ void MainPages::mousePressEvent(QMouseEvent *event)
     QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//刷新
     int x = event->x();
     int y = event->y();
+
+    position_old_x = x;
+    position_old_y = y;
+
     if(SHOWBOOKSHELFSIGNAL){
         emit showBookshelfSignal();
     }else if(SHOWPULLDOWNWINDOWSIGNAL){
@@ -281,43 +363,6 @@ void MainPages::mousePressEvent(QMouseEvent *event)
 
             this->repaint();
         }
-    }else if(FIRSTBOOK){
-        if(currentPagebooklist->size()>0){
-            index_book_of_three =0;
-            if(Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(0)))
-                Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(0));
-            this->repaint();
-            mysettings_m->setCurrentBookPath(currentPagebooklist->at(0).file_path);
-            mysettings_m->setCurrentBookTitle(currentPagebooklist->at(0).file_name);
-            commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(0).file_path);
-
-        }
-
-    }else if(SECONDBOOK){
-        if(currentPagebooklist->size()>1){
-            index_book_of_three =1;
-
-            if(Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(1)))
-                Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(1));
-            this->repaint();
-            mysettings_m->setCurrentBookPath(currentPagebooklist->at(1).file_path);
-            mysettings_m->setCurrentBookTitle(currentPagebooklist->at(1).file_name);
-            commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(1).file_path);
-
-        }
-
-    }else if(THIRDBOOK){
-        if(currentPagebooklist->size()>2){
-            index_book_of_three =2;
-            if( Database::getInstance()->deleteADataFromUntouchedTable(currentPagebooklist->at(2)))
-                Database::getInstance()->insertADataToTouchedTable(currentPagebooklist->at(2));
-            this->repaint();
-            mysettings_m->setCurrentBookPath(currentPagebooklist->at(2).file_path);
-            mysettings_m->setCurrentBookTitle(currentPagebooklist->at(2).file_name);
-            commonutils->openBookFromFBreader(mprocess,currentPagebooklist->at(2).file_path);
-
-        }
-
     }else if(CURRENTBOOKAREA){
         index_book_of_three = 3;
         this->repaint();

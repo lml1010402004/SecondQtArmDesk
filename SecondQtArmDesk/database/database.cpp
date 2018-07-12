@@ -339,9 +339,18 @@ void Database::insertDataToYitoaDataBase(QList<localDirectoryItem> list)
 
     //here we need to drop the all data from lasttimetable.
     qDebug()<<"max_id=="<<max_id;
-    QSqlQuery query(database);
-    query.prepare(TRUNCATEALLDATAFROMLASTTIMETABLE);
-    if(query.exec()){
+    for(int j=0;j<list.size();j++){
+         if(!databaseHasTheTargetData(list.at(j))){
+             QSqlQuery query(database);
+             query.prepare(TRUNCATEALLDATAFROMLASTTIMETABLE);
+             if(query.exec()){
+             }else{
+                qDebug()<<query.lastError();
+              }
+
+         }
+    }
+
         qDebug()<<"truncate the lasttimetable data!!!";
         localDirectoryItem item;
         for(int i=0;i<list.size();i++){
@@ -357,9 +366,7 @@ void Database::insertDataToYitoaDataBase(QList<localDirectoryItem> list)
            qDebug()<<"data item";
         }
       }
-   }else{
-      qDebug()<<query.lastError();
-    }
+
 
 }
 

@@ -33,9 +33,15 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 
+    void mouseMoveEvent(QMouseEvent *event);
+
     int getTheTargetBookIndex(int x_pos ,int y_pos);
 
 private :
+
+    int position_old_x;
+
+    bool move_event;
 
     QRect rect;
      SysSettings *mysyssetting;

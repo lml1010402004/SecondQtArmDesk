@@ -57,11 +57,11 @@ void settingUSBTransfer::mousePressEvent(QMouseEvent *event)
 
     QList<localDirectoryItem> list = Database::getInstance()->getAllFileInTheTargetDirectory(TARGETDIREC);
     qDebug()<<"usbTransfer=list.size()=="<<list.size();
- if(list.size()>0){//保证在打开路径下是有新文件来插入的.
+
     Database::getInstance()->insertDataToYitoaDataBase(list);
     filelist.clear();
     emit updateTheBookDataSignal();
-    }
+
     usbservice->setEnable(false);
     this->close();
 }

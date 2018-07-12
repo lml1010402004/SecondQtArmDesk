@@ -7,7 +7,7 @@ extern QList<QMainWindow*> *mainwindowlist;
 
 extern QString systemtime;
 extern int systembatteryvalue;
-
+SysSettings *mysyssetting;
 
 settingNetWork::settingNetWork(QWidget *parent) : QMainWindow(parent)
 {

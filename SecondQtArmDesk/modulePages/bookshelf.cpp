@@ -12,8 +12,8 @@ extern int systembatteryvalue;
 
 BookShelf::BookShelf(QWidget *parent) : QMainWindow(parent)
 {
-     mainwindowlist->append(this);
-//   QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//局部刷新
+    mainwindowlist->append(this);
+    //   QApplication::setScreenUpdateMode(QApplication::EINK_GL16_MODE);//局部刷新
 
     this->setWindowFlags(Qt::Dialog|Qt::FramelessWindowHint);
     this->setFixedHeight(GLOBAL_SCREEN_FIXED_HEIGHT);
@@ -69,7 +69,7 @@ void BookShelf::paintEvent(QPaintEvent *event)
     drawbookshelf->drawCurrentPageAndTotalPages(painter,current_page,total_pages);
 
     if(mysyssetting->getConnectWifiMac().length()>0){
-     statusbar->drawWifiStatus(painter,true);
+        statusbar->drawWifiStatus(painter,true);
     }
     if(show_progress_bar>-1){
         commonutils->drawProgressBarOpeningBook(painter);
@@ -84,40 +84,38 @@ void BookShelf::paintEvent(QPaintEvent *event)
  */
 void BookShelf::mousePressEvent(QMouseEvent *event)
 {
-       int x = event->x();
-       int y = event->y();
+    int x = event->x();
+    int y = event->y();
+
+    position_old_x = x;
+
     if(SELECTCONDITIONINDEX0){
-     index_select =0;
-     current_page = 1;
+        index_select =0;
+        current_page = 1;
     }else if(SELECTCONDITIONINDEX1){
-    index_select =1;
-    current_page = 1;
+        index_select =1;
+        current_page = 1;
     }else if(SELECTCONDITIONINDEX2){
-    index_select =2;
-    current_page = 1;
+        index_select =2;
+        current_page = 1;
     }else if(SELECTCONDITIONINDEX3){
-    index_select = 3;
-    current_page = 1;
+        index_select = 3;
+        current_page = 1;
     }else if(FIRSTPAGEPOSITION){
-    current_page =1;
+        current_page =1;
     }else if(LASTPAGEPOSITION){
-      if(current_page>1){
-          current_page--;
-      }
+        if(current_page>1){
+            current_page--;
+        }
     }else if(NEXTPAGEPOSITION){
-      if(current_page<total_pages){
-          current_page++;
-      }
+        if(current_page<total_pages){
+            current_page++;
+        }
     }else if(ENDPAGEPOSITION){
-    current_page = total_pages;
+        current_page = total_pages;
     }
 
-    int index = getTheTargetBookIndex(x,y);
-    if(index>-1&&index<9){
-        emit openBookSignal(index);
-    }else{
-      emit updateDataSignal();
-    }
+
 
 }
 
@@ -128,15 +126,57 @@ void BookShelf::mousePressEvent(QMouseEvent *event)
  */
 void BookShelf::mouseReleaseEvent(QMouseEvent *event)
 {
+
+        int x = event->x();
+        int y = event->y();
+        if(BACKTOMAINPAGE){
+            emit backHomePagesignal();
+        }else if(x>250&&x<350&&y<30){
+            emit showPullWindowSignal();
+        }
+
+        emit updateDataSignal();
+
+
+    int index = getTheTargetBookIndex(x,y);
+    if(index>-1&&index<9){
+        if(!move_event){
+            emit openBookSignal(index);
+        }else{
+            emit updateDataSignal();
+        }
+    }
+    move_event = false;
+
+}
+
+
+/**
+ * @brief BookShelf::mouseMoveEvent
+ * @param event
+ */
+void BookShelf::mouseMoveEvent(QMouseEvent *event)
+{
+
     int x = event->x();
     int y = event->y();
 
-    if(BACKTOMAINPAGE){
-        emit backHomePagesignal();
-    }else if(x>250&&x<350&&y<30){
-        emit showPullWindowSignal();
-    }
+    if(x-position_old_x>25){
 
+        if(current_page>1){
+             move_event = true;
+            current_page--;
+        }
+
+
+    }else if(position_old_x-x>25){
+
+        if(current_page<total_pages){
+             move_event = true;
+            current_page++;
+        }
+
+    }
 }
 
 /**
@@ -151,13 +191,13 @@ int BookShelf::getTheTargetBookIndex(int x, int y)
     int temp = -1;
     if(BOOKSHELFBOOKAREA){
         //这是要点击书本
-     if((x-66)/180==0){
-       temp  = ((y-165)/180)*3;
-     }else if((x-66)/180==1){
-       temp = ((y-165)/180)*3+1;
-     }else if((x-66)/180==2){
-       temp = ((y-165)/180)*3+2;
-     }
+        if((x-66)/180==0){
+            temp  = ((y-165)/180)*3;
+        }else if((x-66)/180==1){
+            temp = ((y-165)/180)*3+1;
+        }else if((x-66)/180==2){
+            temp = ((y-165)/180)*3+2;
+        }
     }
     return temp ;
 }
@@ -168,6 +208,7 @@ int BookShelf::getTheTargetBookIndex(int x, int y)
  */
 void BookShelf::init()
 {
+    move_event = false;
 
     mysyssetting = new SysSettings;
     show_progress_bar = -1;
@@ -182,30 +223,30 @@ void BookShelf::init()
     commonutils = new commonUtils;
 
 
-//=============init data===============
+    //=============init data===============
     list.clear();
     list.append(QString("Read"));
     list.append(QString("Name"));
     list.append(QString("Time"));
     list.append(QString("Author"));
     for(int i=0;i<list.size();i++){
-    conditionitem.setCircle_icon_path(emptypath);
-    conditionitem.setText_str(list.at(i));
-    conditonsItemlist->append(conditionitem);
+        conditionitem.setCircle_icon_path(emptypath);
+        conditionitem.setText_str(list.at(i));
+        conditonsItemlist->append(conditionitem);
     }
-//======================================
+    //======================================
 
-totalbookinfolist = Database::getInstance()->getAllDataFromTouchedTable();
+    totalbookinfolist = Database::getInstance()->getAllDataFromTouchedTable();
 
-total_pages = getTotalPagesForEachCondition(totalbookinfolist);
+    total_pages = getTotalPagesForEachCondition(totalbookinfolist);
 
- if(total_pages>0){
-     current_page = 1;
-     currentpagebookinfolist =  getCurrentPageBooklist(totalbookinfolist,current_page);
- }else{
-     current_page =0;
- }
- initConnections();
+    if(total_pages>0){
+        current_page = 1;
+        currentpagebookinfolist =  getCurrentPageBooklist(totalbookinfolist,current_page);
+    }else{
+        current_page =0;
+    }
+    initConnections();
 
 }
 
@@ -215,12 +256,12 @@ total_pages = getTotalPagesForEachCondition(totalbookinfolist);
  */
 void BookShelf::initConnections()
 {
-   QObject::connect(this,SIGNAL(backHomePagesignal()),this,SLOT(backHomePageSlot()));
-   QObject::connect(this,SIGNAL(updateDataSignal()),this,SLOT(updateDataSlot()));
-   QObject::connect(this,SIGNAL(openBookSignal(int)),this,SLOT(openBookSlot(int)));
-   QObject::connect(mprocess,SIGNAL(finished(int ,QProcess::ExitStatus)),this,SLOT(processFinisheds()));
-   QObject::connect(statusbar,SIGNAL(broadcastTimeAndBattery(QString,int)),this,SLOT(updateTimeAndBatteryValue(QString,int)));
-  }
+    QObject::connect(this,SIGNAL(backHomePagesignal()),this,SLOT(backHomePageSlot()));
+    QObject::connect(this,SIGNAL(updateDataSignal()),this,SLOT(updateDataSlot()));
+    QObject::connect(this,SIGNAL(openBookSignal(int)),this,SLOT(openBookSlot(int)));
+    QObject::connect(mprocess,SIGNAL(finished(int ,QProcess::ExitStatus)),this,SLOT(processFinisheds()));
+    QObject::connect(statusbar,SIGNAL(broadcastTimeAndBattery(QString,int)),this,SLOT(updateTimeAndBatteryValue(QString,int)));
+}
 
 /**
  * @brief BookShelf::getTotalPagesForEachCondition
@@ -247,9 +288,9 @@ int BookShelf::getTotalPagesForEachCondition(QList<localDirectoryItem> *list)
  */
 QList<localDirectoryItem>* BookShelf::getCurrentPageBooklist(QList<localDirectoryItem> *list,int currentpage)
 {
- QList<localDirectoryItem> *temp = new QList<localDirectoryItem>;
-  temp = commonutils->getCurrentPageBooks(list,currentpage,9);
-  return temp;
+    QList<localDirectoryItem> *temp = new QList<localDirectoryItem>;
+    temp = commonutils->getCurrentPageBooks(list,currentpage,9);
+    return temp;
 }
 
 
@@ -263,7 +304,7 @@ void BookShelf::backHomePageSlot()
     if(size>0){
         for(int i=0;i<size;i++){
             if(mainwindowlist->at(i)!=NULL){
-             mainwindowlist->at(i)->close();
+                mainwindowlist->at(i)->close();
             }
         }
     }
@@ -311,11 +352,11 @@ void BookShelf::updateDataSlot()
  */
 void BookShelf::openBookSlot(int index)
 {
-  if((currentpagebookinfolist->size())>index){
-      show_progress_bar = 1;
-      this->repaint();
-      commonutils->openBookFromFBreader(mprocess,currentpagebookinfolist->at(index).file_path);
-  }
+    if((currentpagebookinfolist->size())>index){
+        show_progress_bar = 1;
+        this->repaint();
+        commonutils->openBookFromFBreader(mprocess,currentpagebookinfolist->at(index).file_path);
+    }
 }
 
 

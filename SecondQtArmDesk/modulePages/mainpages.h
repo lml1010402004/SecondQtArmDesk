@@ -52,9 +52,17 @@ public:
     ~MainPages();
     StatusBar *statusbar;
     void keyPressEvent(QKeyEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+
+
+
 
 
 private:
+
+    int position_old_x;
+    int position_old_y;
+    bool move_event;
 
 bool first_time_enter;
     int index_book_of_three;
@@ -104,6 +112,8 @@ bool first_time_enter;
 
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
+
+    void mouseReleaseEvent(QMouseEvent *event);
 
     void init();
     void initConnections();

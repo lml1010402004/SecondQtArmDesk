@@ -45,7 +45,7 @@ private:
     QString targetWifiMac;
 
     int indexForPosition;
-    SysSettings *mysyssetting;
+
     QRect rect;
 
 
