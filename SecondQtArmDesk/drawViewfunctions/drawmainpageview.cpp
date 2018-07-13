@@ -51,6 +51,10 @@ void drawMainPageView::drawCurrentBookCover(QPainter *painter,QString bookCover)
    rect.setHeight(MAINPAGEBOOKCOVER_HEIGHT);
    painter->drawRect(rect);
 
+   rect.setX(MAINPAGEBOOKCOVER_X+1);
+   rect.setY(MAINPAGEBOOKCOVER_Y+1);
+   rect.setWidth(MAINPAGEBOOKCOVER_WIDTH-1);
+   rect.setHeight(MAINPAGEBOOKCOVER_HEIGHT-1);
    QFileInfo *tempFile = new QFileInfo(bookCover+".jpg");
    if(tempFile->exists()){
 
@@ -120,7 +124,7 @@ void drawMainPageView::drawCurrentBookProgress(QPainter *painter, int percentage
 }
 
 
-int draw_main_page1[10] = {95,150,450,110,150,110,150,610,110,80};
+int draw_main_page1[10] = {95,150,450,110,150,95,150,610,110,80};
 /**
  * three books we set each page.
  *  @brief drawMainPageView::drawBooksOfCurrentPage
@@ -153,6 +157,10 @@ int size = booklist->size();
     }
 
     painter->drawRect(rect);
+    rect.setX(draw_main_page1[0]+draw_main_page1[1]*i+1);
+    rect.setY(draw_main_page1[2]+1);
+    rect.setWidth(draw_main_page1[3]-1);
+    rect.setHeight(draw_main_page1[4]-1);
     painter->drawPixmap(rect,temppath);
 
     rect.setX(draw_main_page1[5]+draw_main_page1[6]*i);
@@ -160,7 +168,12 @@ int size = booklist->size();
     rect.setWidth(draw_main_page1[8]);
     rect.setHeight(draw_main_page1[9]);
 
-    painter->drawText(rect,item.file_name);
+    QString tempfile_name = item.file_name.split("-").at(1);
+    QString temp = tempfile_name.split(".").at(0);
+    if(temp.length()>20){
+        temp = temp.mid(0,20)+QString("...");
+    }
+    painter->drawText(rect,temp);
 
   }
 }
@@ -168,7 +181,7 @@ int size = booklist->size();
 }
 
 
-int draw_main_page2[4] = {44,505,16,16};
+int draw_main_page2[4] = {44,505,20,20};
 /**
  * @brief drawMainPageView::drawLastPage
  * @param painter
@@ -184,7 +197,7 @@ void drawMainPageView::drawLastPage(QPainter *painter,int index)
 }
 
 
-int draw_main_page3[4] = {526,505,16,16};
+int draw_main_page3[4] = {526,505,20,20};
 /**
  * @brief drawMainPageView::drawNextPage
  * @param painter
@@ -208,11 +221,11 @@ int draw_main_page4[4] = {230,400,200,40};
 void drawMainPageView::drawTextView(QPainter *painter)
 {
     font.setPointSize(TWICESIZEFONT);
-    rect.setX(draw_main_page4[0]);
+    rect.setX(draw_main_page4[0]+10);
     rect.setY(draw_main_page4[1]);
     rect.setWidth(draw_main_page4[2]);
     rect.setHeight(draw_main_page4[3]);
-    painter->drawText(rect,QObject::tr("RecentBooks"));
+    painter->drawText(rect,QObject::tr("NewBooks"));
 
 }
 

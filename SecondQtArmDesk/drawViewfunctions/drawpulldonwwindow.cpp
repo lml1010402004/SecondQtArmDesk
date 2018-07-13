@@ -41,8 +41,8 @@ void drawpulldonwwindow::drawCloseIcon(QPainter *painter)
 
     rect.setX(275);
     rect.setY(260);
-    rect.setWidth(27);
-    rect.setHeight(12);
+    rect.setWidth(39);
+    rect.setHeight(18);
     painter->drawPixmap(rect,closewindow);
 
 //    line.setLine(0,295,600,295);

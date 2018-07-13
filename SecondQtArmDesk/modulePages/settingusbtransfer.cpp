@@ -51,8 +51,6 @@ void settingUSBTransfer::mousePressEvent(QMouseEvent *event)
          usbservice->setEnable(true);
 
         }
-
-
    }else if(USBTRANSFERCHARGE){
 
     QList<localDirectoryItem> list = Database::getInstance()->getAllFileInTheTargetDirectory(TARGETDIREC);

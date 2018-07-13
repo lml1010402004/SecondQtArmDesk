@@ -128,7 +128,10 @@ for(int i=0;i<rows;i++){
             rect.setWidth(position4[4]);
             rect.setHeight(position4[5]);
             painter->drawRect(rect);
-
+            rect.setX(position4[0]+position4[1]*j+1);
+            rect.setY(position4[2]+position4[3]*i+1);
+            rect.setWidth(position4[4]-1);
+            rect.setHeight(position4[5]-1);
             QString cover_path = booklist->at(i*3+j).file_path+".jpg";
             QFileInfo *info = new QFileInfo(cover_path);
             if(info->exists()){
@@ -144,7 +147,8 @@ for(int i=0;i<rows;i++){
             rect.setHeight(position4[11]);
             font.setPointSize(10);
             painter->setFont(font);
-            painter->drawText(rect,booklist->at(i*3+j).file_name);
+            QString temp = booklist->at(i*3+j).file_name.split("-").at(0);
+            painter->drawText(rect,temp);
         }
 
     }else{
@@ -154,7 +158,10 @@ for(int i=0;i<rows;i++){
             rect.setWidth(position5[4]);
             rect.setHeight(position5[5]);
             painter->drawRect(rect);
-
+            rect.setX(position5[0]+position5[1]*k+1);
+            rect.setY(position5[2]+position5[3]*i+1);
+            rect.setWidth(position5[4]-1);
+            rect.setHeight(position5[5]-1);
             QString cover_path = booklist->at(i*3+k).file_path+".jpg";
             QFileInfo *info = new QFileInfo(cover_path);
             if(info->exists()){
@@ -168,7 +175,8 @@ for(int i=0;i<rows;i++){
             rect.setHeight(position5[11]);
             font.setPointSize(10);
             painter->setFont(font);
-            painter->drawText(rect,booklist->at(i*3+k).file_name);
+            QString temp = booklist->at(i*3+k).file_name.split("-").at(0);
+            painter->drawText(rect,temp);
         }
     }
  }
